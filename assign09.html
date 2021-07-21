@@ -46,7 +46,7 @@
                   <!-- Give this field the name and id amount -->
                   <textarea
                     id="populationInfo"
-                    rows="10"
+                    rows="11"
                     cols="50"
                     class="py-2 px-3 rounded-lg border-2 border-blue-300 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" 
                     placeholder="Select a country first..."
@@ -56,7 +56,7 @@
 
             <!-- Part 2 -->
             <div class="grid grid-cols-1 mt-5 mx-7">
-              <label class="uppercase md:text-sm text-xs text-gray-500 text-light font-semibold">URL to data file:</label>
+              <label class="uppercase md:text-sm text-xs text-gray-500 text-light font-semibold">URL to data file (JSON format):</label>
               <!-- Give this field the id payment. -->
               <input
                 id="url"
@@ -64,8 +64,22 @@
                 type="text"
                 placeholder="https://example.com/path/to/file/json.txt"
                 class="py-2 px-3 rounded-lg border-2 border-blue-300 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent">
-                <span id="urlFormatErrorMessage" class="px-3 text-red-500 hidden">Error: Invalid URL.</span>
+                <span id="urlFormatErrorMessage" class="px-3 text-red-500 hidden">Error: Invalid URL or file not exist.</span>
             </div>
+
+            <div class="grid grid-cols-1 gap-5 md:gap-8 mt-5 mx-7">
+              <div class="grid grid-cols-1">
+                <label class="uppercase md:text-sm text-xs text-gray-500 text-light font-semibold">Students information:</label>
+                <!-- Give this field the name and id amount -->
+                <textarea
+                  id="studentsInfo"
+                  rows="11"
+                  cols="50"
+                  class="py-2 px-3 rounded-lg border-2 border-blue-300 mt-1 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent" 
+                  placeholder="Fetch data first..."
+                  disabled></textarea>
+              </div>
+          </div>
 
             <div class='flex items-center justify-center  md:gap-8 gap-4 pt-5 pb-5'>
               <!-- Give this field the id calculate. -->

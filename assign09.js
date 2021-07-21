@@ -1,5 +1,6 @@
 const countriesSelectOptionField = document.querySelector('#countries')
 const populationInfoTextField = document.querySelector('#populationInfo')
+const studentsInfoTextField = document.querySelector('#studentsInfo')
 const fetchDataBtn = document.querySelector('#fetchDataBtn')
 const urlInputField = document.querySelector('#url')
 const urlFormatErrorMessage = document.querySelector('#urlFormatErrorMessage')
@@ -27,30 +28,39 @@ FileHelper.readStringFromFileAtPath = function(pathOfFileToReadFrom, callback = 
 }
 
 // Modern way to fetch data from server using ES6
-FileHelper.readStringFromFileAtPathWFR = function(pathOfFileToReadFrom, callback = () => {}) {
+FileHelper.readStringFromFileAtPathWFR = function(pathOfFileToReadFrom, generateFinalData = false, callback = () => {}) {
     // As with JSON, use the Fetch API & ES6
     fetch(pathOfFileToReadFrom)
         .then(response => response.text())
         .then(data => {
-            // Do something with your data
-            let finalData = []
-            data = data.replace(/\s\s+/g,':').trim().split('\n')
+            if (generateFinalData == true) {
+                // Do something with your data
+                let finalData = []
+                data = data.trim().split('\n')
 
-            finalData = data.map((row) => {
-                let splitedRow = row.split(':')
-                return [splitedRow[0], Number.parseFloat(splitedRow[1].replace(/\,/g,''))]
-            })
-            countriesData[pathOfFileToReadFrom] = finalData
-            callback(finalData)
+                finalData = data.map((row) => {
+                    let splitedRow = row.replace(/[\r]+/g, '').replace(/\s\s+/g,':').split(':')
+                    return [splitedRow[0], Number.parseFloat(splitedRow[1].replace(/\,/g,''))]
+                })
+                countriesData[pathOfFileToReadFrom] = finalData
+                if (typeof callback == "function") callback(finalData)
+            } else {
+                if (typeof callback == "function") callback(data)
+            }
+
+        }).catch(error => {
+            showErrors(urlInputField, urlFormatErrorMessage)
+            studentsInfoTextField.innerHTML = ''
+            console.log(error)
         })
 }
 
 // Function getData()
 function getData(callback = () => {}) {
-    FileHelper.readStringFromFileAtPathWFR("canada.txt")
-    FileHelper.readStringFromFileAtPathWFR("mexico.txt")
-    FileHelper.readStringFromFileAtPathWFR("russia.txt")
-    FileHelper.readStringFromFileAtPathWFR("usa.txt")
+    FileHelper.readStringFromFileAtPathWFR("canada.txt", true)
+    FileHelper.readStringFromFileAtPathWFR("mexico.txt", true)
+    FileHelper.readStringFromFileAtPathWFR("russia.txt", true)
+    FileHelper.readStringFromFileAtPathWFR("usa.txt", true)
     callback()
 }
 
@@ -100,8 +110,14 @@ fetchDataBtn.addEventListener('click', event => {
     event.preventDefault()
     console.log(urlInputField.value)
     if (isValidURLValue(urlInputField.value)) {
-        FileHelper.readStringFromFileAtPathWFR(urlInputField.value, (data) => {
-            console.log('Result data: ', data)
+        FileHelper.readStringFromFileAtPathWFR(urlInputField.value, false, (data) => {
+            let formattedData = JSON.parse(data)
+            console.log('Result data: ', formattedData)
+            let dataRaw = ''
+            for (let student of formattedData['students']) {
+                dataRaw += 'Full Name: ' + student['first'] + ' ' + student['last'] + ', major: ' + student['major'] + ', GPA: ' + student['gpa'] + '\n' + 'Address: ' + student['address']['zip'] + ', ' + student['address']['state'] + ', ' + student['address']['city'] + '\n\n'
+            }
+            studentsInfoTextField.innerHTML = dataRaw
         })
     }
 })
